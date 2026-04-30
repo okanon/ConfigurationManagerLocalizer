@@ -8,7 +8,7 @@ namespace ConfigurationManagerLocalizer
 {
     [HarmonyPatch(typeof(ConfigurationManager.ConfigurationManager))]
     [HarmonyPatch("CalculateWindowRect")]
-    public static class Patch_CalculateWindowRect
+    public static class Patch_CalculateWindowRect_AdjustWidth
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
