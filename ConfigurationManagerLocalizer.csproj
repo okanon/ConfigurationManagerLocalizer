@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <AssemblyName>ConfigurationManagerLocalizer</AssemblyName>
+        <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+        <Description>A plugin that localizes the UI of the Configuration Manager plugin for BepInEx.</Description>
+        <Authors>okanon</Authors>
+        <Company></Company>
+        <Copyright>Copyright © 2026 okanon</Copyright>
+        <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DaysSince2020>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse('2020-01-01'))).Days)</DaysSince2020>
+        <BuildNumber>$(DaysSince2020)</BuildNumber>
+        <Version>0.1.0</Version>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <FileVersion>0.1.0.$(BuildNumber)</FileVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <Optimize>False</Optimize>
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <Optimize>True</Optimize>
+        <DebugType>none</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="HarmonyX" Version="2.16.1" />
+        <PackageReference Include="BepInEx.BaseLib" Version="5.4.21" />
+        <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+        <PackageReference Include="MonoMod.Backports" Version="1.1.2" />
+        <PackageReference Include="MonoMod.Core" Version="1.3.4" />
+        <PackageReference Include="MonoMod.ILHelpers" Version="1.1.0" />
+        <PackageReference Include="MonoMod.RuntimeDetour" Version="25.3.4" />
+        <PackageReference Include="MonoMod.Utils" Version="25.0.12" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="UnityEngine.Modules" Version="2020.3.17" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="ConfigurationManager">
+            <HintPath>lib\ConfigurationManager.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+</Project>

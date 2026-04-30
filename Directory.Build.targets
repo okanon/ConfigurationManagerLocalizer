@@ -1,0 +1,63 @@
+﻿<Project>
+    <PropertyGroup>
+        <WarnCodeNoGameRoot>CMLBW001</WarnCodeNoGameRoot>
+        <WarnCodeNoBepInEx>CMLBW002</WarnCodeNoBepInEx>
+    </PropertyGroup>
+
+    <Target Name="LocateGameRoot"
+            AfterTargets="Build">
+        <PropertyGroup>
+            <GameRootExists Condition="Exists('$(GameRoot)')">true</GameRootExists>
+            <GameRootExists Condition="'$(GameRootExists)' == ''">false</GameRootExists>
+        </PropertyGroup>
+
+        <Warning Code="$(WarnCodeNoGameRoot)"
+                 Text="Game directory not found. Skipping deployment of build artifacts."
+                 Condition="'$(GameRootExists)' == 'false'" />
+    </Target>
+
+    <Target Name="LocateBepInEx"
+            AfterTargets="LocateGameRoot"
+            Condition="'$(GameRootExists)' == 'true'">
+        <ItemGroup>
+            <MissingMarkers Include="@(BepInExMarkers)"
+                            Condition="!Exists('%(Identity)')" />
+            <MissingMarkerNames Include="%(MissingMarkers.Filename)%(MissingMarkers.Extension)"
+                                Condition="!Exists('%(MissingMarkers.Identity)')" />
+        </ItemGroup>
+        <PropertyGroup>
+            <HasBepInExMarkers Condition="'@(MissingMarkers)' == ''">true</HasBepInExMarkers>
+            <HasBepInExMarkers Condition="'@(MissingMarkers)' != ''">false</HasBepInExMarkers>
+        </PropertyGroup>
+
+        <Warning Code="$(WarnCodeNoBepInEx)"
+                 Text="BepInEx files were not found. Skipping deployment of build artifacts. You need to install BepInEx 5 in the game directory.&#x0A;Missing: @(MissingMarkerNames, ', ')"
+                 Condition="'$(HasBepInExMarkers)' =='false'" />
+    </Target>
+
+    <Target Name="Deployment"
+            AfterTargets="LocateBepInEx"
+            Condition="'$(GameRootExists)' == 'true' And '$(HasBepInExMarkers)' == 'true'">
+        <Message Text="Deploying build output to the BepInEx plugins folder for $(GameName)..." Importance="high" />
+
+        <ItemGroup>
+            <BuildOutputs Include="$(TargetDir)$(TargetFileName)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+            <BuildOutputs Include="$(TargetDir)$(TargetName).pdb" />
+        </ItemGroup>
+
+        <Message Text="Destination:" Importance="high" />
+        <Message Text="  $(BepInExPlugins)" Importance="high" />
+        <Message Text="Files:" Importance="high" />
+        <Message Text="  - %(BuildOutputs.Filename)%(BuildOutputs.Extension)" Importance="high" />
+
+        <Delete Condition="'$(Configuration)' == 'Release' And Exists('$(TargetDir)$(TargetName).pdb')"
+                Files="$(BepInExPlugins)\$(TargetName).pdb" />
+        <Copy SourceFiles="@(BuildOutputs)"
+              DestinationFolder="$(BepInExPlugins)"
+              SkipUnchangedFiles="true" />
+
+        <Message Text="Deployment completed successfully." Importance="high" />
+    </Target>
+</Project>

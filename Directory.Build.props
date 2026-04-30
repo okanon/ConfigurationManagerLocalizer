@@ -1,0 +1,13 @@
+﻿<Project>
+    <PropertyGroup>
+        <GameRoot>D:\Steam\steamapps\common\Graveyard Keeper</GameRoot>
+        <GameName>$([System.IO.Path]::GetFileName('$(GameRoot.TrimEnd('\'))'))</GameName>
+        <BepInExRoot>$(GameRoot)\BepInEx</BepInExRoot>
+        <BepInExPlugins>$(BepInExRoot)\plugins</BepInExPlugins>
+    </PropertyGroup>
+    <ItemGroup>
+        <BepInExMarkers Include="$(BepInExRoot)" />
+        <BepInExMarkers Include="$(GameRoot)\winhttp.dll" />
+        <BepInExMarkers Include="$(GameRoot)\doorstop_config.ini" />
+    </ItemGroup>
+</Project>
